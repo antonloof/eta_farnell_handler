@@ -3,6 +3,13 @@ This parse invoices from Farnell and generates emails with invoices to send to t
 
 It's the best thing since sliced cheese!
 
+## Installation
+1. Get python3.9 (or better might work)
+2. Install requirements with python -m pip install -r requirements.txt
+3. (make sure that you have java)
+4. ??
+5. Profit!
+
 ## Before use!
 Make sure that you have the most recent version of the database. It is located in the farnell folder in the boards drive!
 

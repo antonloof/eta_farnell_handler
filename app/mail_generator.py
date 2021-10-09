@@ -8,12 +8,12 @@ def generate_invoice_mails(output_dir):
 
     unpaid_invoices = ToMemberInvoice.objects.filter(payed=False)
     for invoice in unpaid_invoices:
-        # we should not send invoices to eta
-        person = invoice.items.first().person
-        if person.is_eta:
+        if not invoice.items.exists():
             invoice.payed = True
             invoice.save()
+            continue
             
+        person = invoice.items.first().person
         if not person.email:
             print("Person", person.name, "does not have an email. Can't generate invoice")
             continue
@@ -21,7 +21,16 @@ def generate_invoice_mails(output_dir):
         if not person.phone:
             print("Person", person.name, "does not have a phone number. Can't generate invoice")
             continue
-                
+            
+        # we should not send invoices to eta
+        if person.is_eta:
+            invoice.payed = True
+            invoice.save()
+            continue
+
+        invoice.sent = True
+        invoice.save()
+        
         total_cost = sum(map(lambda x: x.cost, invoice.items.all()))
         html = f"<p>Hej {person.name}!</p>" 
         html += "<p>Du har en obetald faktura till ETA!</p>"

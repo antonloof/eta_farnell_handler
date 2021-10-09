@@ -52,9 +52,12 @@ def parse_order_table(table, invoice_no):
         # make sure to only consume 2 lines in that case
         if not re.match(r"\d+ \d+", table[0][0]) and not is_end_of_order_table(table):
             name = table.pop(0)[0]
+            name = name.upper()
+            # farnell adds some shit in some cases that contains ship date and a date lets remove
+            name = name.split(" / SHIP DATE:")[0]
         else:
             name = "UNKNOWN"
-        name = name.upper()
+        
         art_no = line1[0].split()[1]
         cost = float(line1[-1])
         vat = float(line1[-2])

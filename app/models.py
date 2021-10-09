@@ -8,7 +8,9 @@ class ToMemberInvoice(models.Model):
     id = RandomCharField(length=12, primary_key=True)
     
     payed = models.BooleanField(default=False)
+    sent = models.BooleanField(default=False)
     created = models.DateField(default=timezone.now)
+    
     
 # represents someone that orders stuff via us at ETA
 class Person(models.Model):
