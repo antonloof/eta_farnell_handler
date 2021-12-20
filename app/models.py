@@ -9,8 +9,14 @@ class ToMemberInvoice(models.Model):
     
     payed = models.BooleanField(default=False)
     sent = models.BooleanField(default=False)
+    
     created = models.DateField(default=timezone.now)
     
+    def __str__(self):
+        return f"id: {self.id}"
+        
+    def __repr__(self):
+        return str(self)
     
 # represents someone that orders stuff via us at ETA
 class Person(models.Model):
