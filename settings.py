@@ -14,7 +14,48 @@ DATABASES = {
 }
 
 # Since we only have one app which we use
-INSTALLED_APPS = ("app",)
+INSTALLED_APPS = ("app",
+    "django.contrib.admin", 
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.messages",
+    "django.contrib.sessions",
+    "django.contrib.staticfiles"
+)
 
 # Write a random secret key here
 SECRET_KEY = "not secret"
+
+ALLOWED_HOSTS = ["localhost"]
+ROOT_URLCONF = "app.urls"
+DEBUG = True
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+OPTIONS = {
+    "context_processors": "django.contrib.messages.context_processors.messages"
+}
+
+MIDDLEWARE = [
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+]
+
+PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'

@@ -17,3 +17,10 @@ Make sure that you have the most recent version of the database. It is located i
 Things you can do with this SW.
 
 ### Parse an invoice 
+
+
+## View the database
+Start a dev server with
+python manage.py runserver 8000
+
+visit http://localhost:8000 and log in with eta/eta.

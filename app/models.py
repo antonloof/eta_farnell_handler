@@ -13,10 +13,17 @@ class ToMemberInvoice(models.Model):
     created = models.DateField(default=timezone.now)
     
     def __str__(self):
-        return f"id: {self.id}"
+        first_item = self.items.first()
+        person_name = "NO PERSON FOUND"
+        if first_item is not None:
+            person_name = first_item.person.name
+        return f"id: {self.id}. Payed: {self.payed}. Person: {person_name}"
         
     def __repr__(self):
         return str(self)
+        
+    class Meta:
+        ordering = ["payed"]
     
 # represents someone that orders stuff via us at ETA
 class Person(models.Model):
@@ -37,6 +44,9 @@ class Person(models.Model):
         
     def __repr__(self):
         return str(self)
+        
+    class Meta:
+        ordering = ["name"]
     
 # represents one line in the invoice sent by farnell to us
 class FarnellItem(models.Model):
@@ -63,3 +73,6 @@ class FarnellItem(models.Model):
         
     def __repr__(self):
         return str(self)
+        
+    class Meta:
+        ordering = ["order_placed_at"]
