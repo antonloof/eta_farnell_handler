@@ -17,13 +17,13 @@ class ToMemberInvoice(models.Model):
         person_name = "NO PERSON FOUND"
         if first_item is not None:
             person_name = first_item.person.name
-        return f"id: {self.id}. Payed: {self.payed}. Person: {person_name}"
+        return f"id: {self.id}. Sent: {self.sent}. Payed: {self.payed}. Person: {person_name}"
         
     def __repr__(self):
         return str(self)
         
     class Meta:
-        ordering = ["payed"]
+        ordering = ["payed", "sent"]
     
 # represents someone that orders stuff via us at ETA
 class Person(models.Model):
