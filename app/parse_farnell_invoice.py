@@ -44,26 +44,34 @@ def parse_order_table(table, invoice_no):
             break
         
         line1 = table.pop(0)
-        line2 = table.pop(0)
-        # some invoices have a note above the line comment, remove that if found
-        if "Despatch Note No " in table[0][0]:
-            table.pop(0)
-        # some invoices have only 2 lines (this happens when no line comment is added)
-        # make sure to only consume 2 lines in that case
-        if not re.match(r"\d+ \d+", table[0][0]) and not is_end_of_order_table(table):
-            name = table.pop(0)[0]
-            name = name.upper()
-            # farnell adds some shit in some cases that contains ship date and a date lets remove
-            name = name.split(" / SHIP DATE:")[0]
+        # shipping is a single line item without VAT
+        if "FRAKT" in line1:
+            cost = float(line1[-1])
+            item_desc = "FRAKT"
+            name = "ETA"
+            art_no = "FRAKT"
+            item_count = 1
         else:
-            name = "UNKNOWN"
-        
-        art_no = line1[0].split()[1]
-        cost = float(line1[-1])
-        vat = float(line1[-2])
-        cost = cost * (1+vat/100)
-        item_desc = line2[0]
-        item_count = get_item_count(line1)
+            line2 = table.pop(0)
+            # some invoices have a note above the line comment, remove that if found
+            if "Despatch Note No " in table[0][0]:
+                table.pop(0)
+            # some invoices have only 2 lines (this happens when no line comment is added)
+            # make sure to only consume 2 lines in that case
+            if not re.match(r"\d+ \d+", table[0][0]) and not is_end_of_order_table(table):
+                name = table.pop(0)[0]
+                name = name.upper()
+                # farnell adds some shit in some cases that contains ship date and a date lets remove
+                name = name.split(" / SHIP DATE:")[0]
+            else:
+                name = "UNKNOWN"
+            
+            art_no = line1[0].split()[1]
+            cost = float(line1[-1])
+            vat = float(line1[-2])
+            cost = cost * (1+vat/100)
+            item_desc = line2[0]
+            item_count = get_item_count(line1)
         
         
         person, created = Person.objects.all().get_or_create(name=name)
@@ -105,10 +113,11 @@ def parse_and_save_multiple_invoices(paths):
     group_by_name = defaultdict(list)
     for item in items:
         group_by_name[item.person_id].append(item)
-    to_member_invoices = []
+
     for _, group_items in group_by_name.items():
         invoice = ToMemberInvoice()
         invoice.save()
         for item in group_items:
             item.to_member_invoice = invoice
     FarnellItem.objects.bulk_create(items)
+    print("Parsed", len(paths), "invoices. Created", len(items), "items and added", len(group_by_name), "invoices")

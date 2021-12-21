@@ -3,6 +3,10 @@ from django.db import models
 from django_extensions.db.fields import RandomCharField
 
 
+class ToMemberInvoiceManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(total_cost=models.Sum("items__cost"))
+
 # represents one invoice sent to a member
 class ToMemberInvoice(models.Model):
     id = RandomCharField(length=12, primary_key=True)
@@ -12,12 +16,14 @@ class ToMemberInvoice(models.Model):
     
     created = models.DateField(default=timezone.now)
     
+    objects = ToMemberInvoiceManager()
+    
     def __str__(self):
         first_item = self.items.first()
         person_name = "NO PERSON FOUND"
         if first_item is not None:
             person_name = first_item.person.name
-        return f"id: {self.id}. Sent: {self.sent}. Payed: {self.payed}. Person: {person_name}"
+        return f"id: {self.id}. Sent: {self.sent}. Payed: {self.payed}. Person: {person_name}. Cost {round(self.total_cost if self.total_cost is not None else 0, 2)}"
         
     def __repr__(self):
         return str(self)
@@ -46,7 +52,7 @@ class Person(models.Model):
         return str(self)
         
     class Meta:
-        ordering = ["name"]
+        ordering = ["email"]
     
 # represents one line in the invoice sent by farnell to us
 class FarnellItem(models.Model):
