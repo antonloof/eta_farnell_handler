@@ -34,7 +34,7 @@ def generate_invoice_mails(output_dir):
         total_cost = sum(map(lambda x: x.cost, invoice.items.all()))
         html = f"<p>Hej {person.name}!</p>" 
         html += "<p>Du har en obetald faktura till ETA!</p>"
-        html += f"<p>Totalbelopp: <b>{round(total_cost, 2)}</b> kr</p>"
+        html += f"<p>Totalbelopp: <b>{str(round(total_cost, 2)).replace('.', ',')}</b> kr</p>"
         html += "<p>Betalas till bankgiro: <b>5930-5680</b></p>"
         html += f"<p>Märk betalningen med <b>{invoice.id}</b></p>"
         html += "<p>Nedan följer en sammanställning av artiklarna utgör fakturan.</p>"
@@ -53,7 +53,7 @@ def generate_invoice_mails(output_dir):
             html += f"<td>{item.item_no}</td>"
             html += f"<td>{item.item_desc}</td>"
             html += f"<td>{item.item_count}</td>"
-            html += f"<td>{item.cost:.3f}</td>"
+            html += f"<td>{str(round(item.cost, 2)).replace('.', ',')}</td>"
             html += "</tr>"
         
         html += "</table>"

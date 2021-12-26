@@ -2,10 +2,7 @@ from django.contrib import admin
 from app.models import ToMemberInvoice, Person, FarnellItem
 
 class FarnellItemAdmin(admin.ModelAdmin):
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "to_member_invoice":
-            kwargs["queryset"] = ToMemberInvoice.objects.filter(sent=False, payed=False)
-        return super(FarnellItemAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+    search_fields = ("person__name", "person__email", "item_no")
 
     
 class PersonAdmin(admin.ModelAdmin):
