@@ -21,9 +21,12 @@ class ToMemberInvoice(models.Model):
     def __str__(self):
         first_item = self.items.first()
         person_name = "NO PERSON FOUND"
+        cost_str = ""
+        if hasattr(self, "total_cost"):
+            cost_str = f"Cost {round(self.total_cost if self.total_cost is not None else 0, 2)}"
         if first_item is not None:
             person_name = first_item.person.name
-        return f"id: {self.id}. Sent: {self.sent}. Payed: {self.payed}. Person: {person_name}. Cost {round(self.total_cost if self.total_cost is not None else 0, 2)}"
+        return f"id: {self.id}. Sent: {self.sent}. Payed: {self.payed}. Person: {person_name}.{cost_str}"
         
     def __repr__(self):
         return str(self)

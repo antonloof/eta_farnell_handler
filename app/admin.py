@@ -9,7 +9,8 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = ["name"]
     
 class ToMemberInvoiceAdmin(admin.ModelAdmin):
-    search_fields = ["id"]
+    search_fields = ["id", "created"]
+    
     
 admin.site.register(ToMemberInvoice, ToMemberInvoiceAdmin)
 admin.site.register(Person, PersonAdmin)
