@@ -25,7 +25,7 @@ def get_item_count(line1):
     raise Exception("NO ITEM COUNT FOUND IN LINE", line1)
     
 def is_end_of_order_table(table):
-    end_of_table_ids = ["ER REFERENS  ETA INKÖP", "Utgående"]
+    end_of_table_ids = ["ER REFERENS  ETA INKÖP", "Utgående", "MYCKET VIKTIGT"]
     return table[0][0] in end_of_table_ids
     
 def parse_order_table(table, invoice_no):
