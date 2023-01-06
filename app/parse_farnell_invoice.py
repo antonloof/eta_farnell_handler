@@ -42,7 +42,7 @@ def parse_order_table(table, invoice_no):
     while table:
         if is_end_of_order_table(table):
             break
-        
+    
         line1 = table.pop(0)
         # shipping is a single line item without VAT
         if "FRAKT" in line1:
@@ -51,11 +51,20 @@ def parse_order_table(table, invoice_no):
             name = "ETA"
             art_no = "FRAKT"
             item_count = 1
+        # alla vouchers går till eta, det kassör får göra handpåläggning om det ska till medlem
+        elif line1[0] == "VOUCHER":
+            continue
+        # eta betalar all re reeling (eller handpåläggning av kassör för att lösa det)
+        elif line1[0] == "RE REEL":
+            continue
         else:
             line2 = table.pop(0)
             # some invoices have a note above the line comment, remove that if found
             if "Despatch Note No " in table[0][0]:
                 table.pop(0)
+            # re reeled items have an additional line before the line comment, ignore it
+            if "RE REEL" in table[0][0]:
+                table.pop(0) 
             # some invoices have only 2 lines (this happens when no line comment is added)
             # make sure to only consume 2 lines in that case
             if not re.match(r"\d+ \d+", table[0][0]) and not is_end_of_order_table(table):
@@ -65,7 +74,7 @@ def parse_order_table(table, invoice_no):
                 name = name.split(" / SHIP DATE:")[0]
             else:
                 name = "UNKNOWN"
-            
+
             art_no = line1[0].split()[1]
             cost = float(line1[-1])
             vat = float(line1[-2])
