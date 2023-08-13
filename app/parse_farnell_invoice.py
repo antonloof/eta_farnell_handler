@@ -39,6 +39,11 @@ def parse_order_table(table, invoice_no):
         table.pop(0)
     
     order_date = order_date_line[0].split()[2]
+    # check for new date convention: ETAnnnn-yymmdd, ETAnnnnyymmdd
+    if order_date.startswith("ETA"):
+        _d = re.match(r"ETA....-?(?P<y>[0-9]{2})(?P<m>[0-9]{2})(?P<d>[0-9]{2})", order_date).groupdict()
+        order_date = f"20{_d['y']}-{_d['m']}-{_d['d']}"
+    
     while table:
         if is_end_of_order_table(table):
             break
